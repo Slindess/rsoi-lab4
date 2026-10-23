@@ -7,8 +7,9 @@ namespace=${3:-${NAMESPACE:-default}}
 config=${4:-${CONFIG_PATH:-}}
 : "${variant:?Specify variant}"
 : "${deployment:?Specify deployment}"
+: "${config:?Specify kubeconfig as argument 4 or CONFIG_PATH}"
 kube=(kubectl)
-[[ -z "$config" ]] || kube+=(--kubeconfig "$config")
+kube+=(--kubeconfig "$config")
 kube+=(--namespace "$namespace")
 newman_args=()
 [[ -z "${BASE_URL:-}" ]] || newman_args+=(--env-var "baseUrl=$BASE_URL")

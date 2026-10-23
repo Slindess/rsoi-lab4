@@ -111,6 +111,21 @@ jobs:
         with:
           node-version: '22'
       - run: npm install -g newman@6
+      # education/autograding v1 strips custom environment variables from tests.
+      - name: Configure autograding command
+        run: |
+          python3 - <<'PY'
+          import json, os, shlex
+          from pathlib import Path
+          path = Path('.github/classroom/autograding.json')
+          config = json.loads(path.read_text())
+          config['tests'][0]['run'] = shlex.join([
+              'env', 'BASE_URL=' + os.environ['BASE_URL'],
+              './scripts/test-script.sh', 'v2', 'loyalty-service',
+              os.environ['NAMESPACE'], os.environ['CONFIG_PATH'],
+          ])
+          path.write_text(json.dumps(config, indent=2) + '\n')
+          PY
       - name: Autograding
         uses: education/autograding@v1
         id: autograder
