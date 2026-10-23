@@ -1,0 +1,7 @@
+providers:
+  kubernetesIngress:
+    enabled: true
+service:
+  type: LoadBalancer
+  annotations:
+    lb.beget.com/type: external
