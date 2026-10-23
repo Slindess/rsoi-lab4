@@ -1238,3 +1238,9 @@ buildNumber.properties
 kubeconfig*.yaml
 kubeconfig*.yml
 *.kubeconfig
+
+# Keep deployment scripts: the template's [Ss]cripts rule ignores this directory.
+!/scripts/
+/scripts/*
+!/scripts/deploy.sh
+!/scripts/test-script.sh
