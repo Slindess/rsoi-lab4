@@ -80,7 +80,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      CONFIG_PATH: ${{ runner.temp }}/beget-kubeconfig.yaml
       NAMESPACE: test
     steps:
       - uses: actions/checkout@v4
@@ -95,6 +94,8 @@ jobs:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
           test -n "$KUBE_CONFIG"
+          CONFIG_PATH="$RUNNER_TEMP/beget-kubeconfig.yaml"
+          echo "CONFIG_PATH=$CONFIG_PATH" >> "$GITHUB_ENV"
           umask 077
           printf '%s\n' "$KUBE_CONFIG" > "$CONFIG_PATH"
           kubectl --kubeconfig "$CONFIG_PATH" get nodes
@@ -121,4 +122,4 @@ jobs:
           kubectl --kubeconfig "$CONFIG_PATH" -n "$NAMESPACE" get events --sort-by=.metadata.creationTimestamp
       - name: Remove local credentials
         if: always()
-        run: rm -f "$CONFIG_PATH"
+        run: rm -f "$RUNNER_TEMP/beget-kubeconfig.yaml"
